@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>index</title>
+	<style type="text/css">
+	body{
+		margin: 0;
+		padding: 0;
+		position: relative;
+	}
+	#imgcan{
+		display: block;
+		cursor: pointer;
+	}
+	#glasscan{
+		display: none;
+		border:1px solid #ccc;
+		border-radius:101px;
+		-webkit-border-radius:101px;
+		-o-border-radius:101px;
+		-moz-border-radius:101px;
+		position: absolute;
+	}
+	</style>
+</head>
+<body>
+<canvas id="imgcan" width="800" height="500"></canvas>
+<canvas id="glasscan" width="200" height="200"></canvas>
+<span id="show"></span>
+</body>
+<script type="text/javascript">
+	var imgcan = document.getElementById("imgcan"),
+		glasscan = document.getElementById("glasscan"),
+		imgContext = imgcan.getContext("2d"),
+		glassContext = glasscan.getContext("2d"),
+		img = new Image(),
+	    mouse = captureMouse(imgcan);
+	img.src = "1.jpg";
+	img.onload = function(){
+		imgContext.drawImage(img,0,0);
+	}
+	function captureMouse(element){
+		var  mouse = {x:0 , y:0};
+	    element.addEventListener('mousemove' , function(event){
+	    var x , y;
+	    if(event.pageX || event.pageY){
+	        x = event.pageX;
+	        y = event.pageY;
+	    }else{
+	        x = event.clientX + (document.body.scrollLeft || 
+			document.documentElement.scrollLeft);
+	        y = event.clientY + (document.body.scrollTop || 
+			document.documentElement.scrollTop);
+	    }
+	    x -= element.offsetLeft;
+	    y -= element.offsetTop;
+	    mouse.x = x;
+	    mouse.y = y;
+	    } , false)
+	    return mouse;
+	}
+	imgcan.onmousemove = function(){
+			glassContext.clearRect(0,0,glasscan.width,glasscan.height);
+			glasscan.style.left = mouse.x + 10 + 'px';
+			glasscan.style.top = mouse.y + 10 + 'px';
+			glasscan.style.display = "block";
+			document.getElementById("show").innerText = mouse.x + '|' + mouse.y;
+			var drawWidth = 50,
+				drawHeight = 50;
+			glassContext.drawImage(img,mouse.x-drawWidth/4,mouse.y-drawHeight/4,drawWidth,drawHeight,0,0,drawWidth*4,drawHeight*4);
+	};
+	imgcan.onmouseout = function(){
+			glasscan.style.display = "none";
+	}
+</script>
+</html>
