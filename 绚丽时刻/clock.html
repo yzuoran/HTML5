@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+	<style type="text/css">
+	#canvas{
+		display: block;
+		margin: 0 auto;
+	}
+	</style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="500"></canvas>
+</body>
+<script type="text/javascript" src="digit.js"></script>
+<script type="text/javascript">
+	var canvas = document.getElementById("canvas"),
+		context = canvas.getContext("2d");
+	var ballArr = [];
+	var colors = ["#99cc33","#0099cc","#aa66cc","#99cc00","#669900","#ffbb33","#ff8800"];
+	var radius = 5;
+	function Ball(){
+		this.x = 0;
+		this.y = 0;
+		this.r = 5;
+		this.vx = -3;
+		this.vy = 0;
+		this.gravity = 1;
+		this.color = "#0000ff";
+	}
+	Ball.prototype.draw = function(context){
+		context.save();
+		context.beginPath();
+		context.arc(this.x,this.y,this.r,0,Math.PI*2,false);
+		context.fillStyle = this.color;
+		context.fill();
+		context.closePath();
+	}
+	function draw(x,y,num){
+		for (var i = 0; i < digit[num].length; i++) {
+			for (var j = 0; j < digit[num][i].length; j++) {
+				context.save();
+				context.beginPath();
+				context.fillStyle = "#99cc33";
+				if (digit[num][i][j]==1) {
+					context.arc(x+j*2*(radius+1)+(radius+1),y+i*2*(radius+1)+(radius+1),radius,0,Math.PI*2,false);
+				}
+				context.fill();
+				context.closePath();
+				context.restore();
+			}
+		}
+	}
+	var currTime = new Date(),
+			currH = currTime.getHours(),
+			currM = currTime.getMinutes(),
+			currS = currTime.getSeconds();
+	function update(){
+		var nextTime = new Date(),
+			nextH = nextTime.getHours(),
+			nextM = nextTime.getMinutes(),
+			nextS = nextTime.getSeconds();
+		if (nextS != currS) {
+			updateBall(640,parseInt(nextS%10));
+			if (parseInt(currS/10) != parseInt(nextS/10)) {
+				updateBall(540,parseInt(nextS/10));
+			}
+			if (parseInt(currM%10) != parseInt(nextM%10)) {
+				updateBall(360,parseInt(nextM%10));
+			}
+			if (parseInt(currM/10) != parseInt(nextM/10)) {
+				updateBall(260,parseInt(nextM/10));
+			}
+			if (parseInt(currH%10) != parseInt(nextH%10)) {
+				updateBall(100,parseInt(nextH%10));
+			}
+			if (parseInt(currH/10) != parseInt(nextH/10)) {
+				updateBall(0,parseInt(nextH/10));
+			}
+			
+		}
+		currH = nextH;
+		currM = nextM;
+		currS = nextS;
+		context.clearRect(0,0,canvas.width,canvas.height);
+		draw(0,canvas.height/5,parseInt(currH/10));
+		draw(100,canvas.height/5,parseInt(currH%10));
+		draw(200,canvas.height/5,10);
+		draw(260,canvas.height/5,parseInt(currM/10));
+		draw(360,canvas.height/5,parseInt(currM%10));
+		draw(460,canvas.height/5,10);
+		draw(540,canvas.height/5,parseInt(currS/10));
+		draw(640,canvas.height/5,parseInt(currS%10));
+		for (var i = 0; i < ballArr.length; i++) {
+			ballArr[i].x += ballArr[i].vx;
+			ballArr[i].y += ballArr[i].vy;
+			ballArr[i].vy += ballArr[i].gravity;
+			ballArr[i].draw(context);
+			if(ballArr[i].y+ballArr[i].r>=canvas.height){
+				ballArr[i].vy *= -0.7;
+			}
+		}
+		var inCanvas = 0;
+		for (var i = 0; i < ballArr.length; i++) {
+			if (ballArr[i].x + ballArr[i].r>0 && ballArr[i].x - ballArr[i].r < canvas.width ) {
+				ballArr[inCanvas++] = ballArr[i];
+			}
+		}
+		while (ballArr.length>inCanvas) {
+			ballArr.pop();
+		}
+	}
+	function updateBall(num,time){
+		for (var i = 0; i < digit[time].length; i++) {
+			for (var j = 0; j < digit[time][i].length; j++) {
+				if (digit[time][i][j] == 1) {
+					var ball = new Ball();
+					ball.x = num+j*2*(radius+1)+(radius+1);
+					ball.y = canvas.height/5+i*2*(radius+1)+(radius+1);
+					ball.vx = Math.random()*8-4;
+					ball.vy = Math.random()*8-4;
+					ball.color = colors[Math.floor(Math.random()*colors.length)];
+					ballArr.push(ball);
+				}
+			}
+		}
+	}
+	setInterval("update()",20);
+</script>
+</html>
