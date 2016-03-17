@@ -97,6 +97,7 @@
 			ballArr[i].vy += ballArr[i].gravity;
 			ballArr[i].draw(context);
 			if(ballArr[i].y+ballArr[i].r>=canvas.height){
+				ballArr[i].y = canvas.height-ballArr[i].r;
 				ballArr[i].vy *= -0.7;
 			}
 		}
@@ -108,6 +109,9 @@
 		}
 		while (ballArr.length>inCanvas) {
 			ballArr.pop();
+		}
+		while (ballArr.length>200) {
+			ballArr.shift();
 		}
 	}
 	function updateBall(num,time){
