@@ -89,10 +89,11 @@
 		clockcontext.restore();
 	}
 	function updateTime(){
-		var time = new Date();
-		timeH = time.getHours();
-		timeM = time.getMinutes();
-		timeS = time.getSeconds();
+		var time = new Date(),
+			timeH = time.getHours(),
+			timeM = time.getMinutes(),
+			timeS = time.getSeconds();
+		alert(timeH);
 		if (timeH > 12) {
 			timeH -= 12;
 		}
