@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>wall clock</title>
+	<style type="text/css">
+	canvas{
+		display: block;
+		position: absolute;
+	}
+	#block{
+		width: 800px;
+		height: 500px;
+		position: relative;
+		margin: 0 auto;
+		background: url(1.jpg) bottom center no-repeat;
+		background-size: cover;
+	}
+	#bgcan{
+		border-radius: 125px;
+		box-shadow: 0 -50px 200px #fff,
+				0 5px 400px #fff;
+		left:50%;
+		top:50%;
+		margin: -125px 0 0 -125px;
+
+	}
+	#clockcan{
+		border-radius: 100px;
+		background-color: #FDFDFD;
+		left:50%;
+		top:50%;
+		margin: -100px 0 0 -100px;
+	}
+	</style>
+</head>
+<body>
+<div id="block">
+<canvas id="bgcan" width="250" height="250"></canvas>
+<canvas id="clockcan" width="200" height="200"></canvas>
+</div>
+</body>
+<script type="text/javascript">
+	var bgcan = document.getElementById("bgcan"),
+		clockcan = document.getElementById("clockcan"),
+		bgcontext = bgcan.getContext("2d"),
+		clockcontext = clockcan.getContext("2d"),
+		bgX = bgcan.width/2,
+		bgY = bgcan.height/2,
+		clockX = clockcan.width/2,
+		clockY = clockcan.height/2,
+		radius = clockcan.width/2-20;
+	var radgrad = bgcontext.createRadialGradient(bgX,bgY,bgcan.width/2-50,bgX,bgY,bgcan.width/2);
+	radgrad.addColorStop(0,"#BEBAB7");
+	radgrad.addColorStop(1/5,"#ffffff");
+	radgrad.addColorStop(2/5,"#BFBBBA");
+	radgrad.addColorStop(3/5,"#EEEEEC");
+	radgrad.addColorStop(4/5,"#EBEBEB");
+	radgrad.addColorStop(1,"#EEEEEC");
+	bgcontext.fillStyle = radgrad;
+	bgcontext.fillRect(0,0,bgcan.width,bgcan.height);
+	clockcontext.font = "normal 24px Arial";
+	clockcontext.translate(clockX,clockY);
+	function drawTime(){
+		for (var i = 1; i < 13; i++) {
+			timeText(i,radius*Math.sin(Math.PI*i/6),-radius*Math.cos(Math.PI*i/6));
+		}
+		for (var i = 0,angle=0; i < 60; i++) {
+			clockcontext.save();
+			clockcontext.beginPath();
+			clockcontext.moveTo((radius+18)*Math.cos(angle),(radius+18)*Math.sin(angle));
+			if (i%5==0) {
+				clockcontext.lineWidth = 3;
+			}
+			clockcontext.lineTo((radius+13)*Math.cos(angle),(radius+13)*Math.sin(angle));
+			clockcontext.stroke();
+			clockcontext.restore();
+			angle += Math.PI/30;
+		}
+
+	}
+	//绘制文字
+	function timeText(num,x,y){
+		clockcontext.save();
+		x -= (clockcontext.measureText(num).width/2);
+		y += 8;
+		clockcontext.beginPath();
+		clockcontext.translate(x,y);
+		clockcontext.fillText(num,0,0);
+		clockcontext.restore();
+	}
+	function updateTime(){
+		var time = new Date();
+		timeH = time.getHours();
+		timeM = time.getMinutes();
+		timeS = time.getSeconds();
+		if (timeH > 12) {
+			timeH -= 12;
+		}
+		clockcontext.clearRect(-clockcan.width/2,-clockcan.height/2,clockcan.width,clockcan.height);
+		drawTime();
+		update(timeH,timeM,timeS);
+	}
+	function update(h,m,s){
+		clockcontext.save();
+		clockcontext.beginPath();
+		clockcontext.moveTo(0,0);
+		clockcontext.fillStyle = "#222";
+		clockcontext.arc(0,0,8,0,Math.PI*2,false);
+		clockcontext.fill();
+		clockcontext.restore();
+
+		clockcontext.save();
+		clockcontext.beginPath();
+		clockcontext.moveTo(0,0);
+		clockcontext.lineWidth = 10;
+		clockcontext.lineCap = "round";
+		clockcontext.lineTo((radius-35)*Math.cos(Math.PI*(h-3)/6),(radius-35)*Math.sin(Math.PI*(h-3)/6));
+		clockcontext.stroke();
+		clockcontext.restore();
+
+		clockcontext.save();
+		clockcontext.beginPath();
+		clockcontext.moveTo(0,0);
+		clockcontext.lineWidth = 5;
+		clockcontext.lineTo((radius-5)*Math.cos(Math.PI*(m-15)/30),(radius-5)*Math.sin(Math.PI*(m-15)/30));
+		clockcontext.stroke();
+		clockcontext.restore();
+
+		clockcontext.save();
+		clockcontext.beginPath();
+		clockcontext.fillStyle = "#222";
+		clockcontext.rotate(Math.PI*(s-15)/30);
+		clockcontext.moveTo(-40,-2);
+		clockcontext.lineTo(-40,2);
+		clockcontext.lineTo(-1,2);
+		clockcontext.lineTo(0,1);
+		clockcontext.lineTo(radius+15,1);
+		clockcontext.lineTo(radius+15,-1);
+		clockcontext.lineTo(0,-1);
+		clockcontext.lineTo(0,-2);
+		clockcontext.lineTo(-40,-2);
+		clockcontext.fill();
+		clockcontext.restore();
+	}
+	setInterval("updateTime()",1000);
+</script>
+</html>
