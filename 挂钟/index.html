@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
 	<title>wall clock</title>
 	<style type="text/css">
+	body{
+		margin: 0;
+		padding: 0;
+	}
 	canvas{
 		display: block;
 		position: absolute;
 	}
 	#block{
-		width: 800px;
+		width: 100%;
 		height: 500px;
 		position: relative;
 		margin: 0 auto;
@@ -93,7 +98,6 @@
 			timeH = time.getHours(),
 			timeM = time.getMinutes(),
 			timeS = time.getSeconds();
-		alert(timeH);
 		if (timeH > 12) {
 			timeH -= 12;
 		}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>index</title>
+	<style type="text/css">
+		#show{
+			width: 500px;
+			height: 400px;
+			margin: 20px auto;
+			border: 2px dashed #99cc33;
+			overflow: auto;
+			resize:both;
+		}
+	</style>
+</head>
+<body>
+<div id="show"></div>
+</body>
+<script type="text/javascript">
+	var dest = document.getElementById("show");
+	dest.addEventListener("dragover",function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	},false);
+	dest.addEventListener("dragend",function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	},false);
+
+	dest.addEventListener("drop",function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		var file = e.dataTransfer.files[0],
+			reader = new FileReader(),
+			filename = file.name;
+		if (file.type.substr(0,5)=="image") {
+			reader.onload = function(e){
+				dest.style.background = 'url(' + e.target.result + ') no-repeat center';
+				dest.innerHTML = '';
+			}
+			reader.readAsDataURL(file);
+		}else if (file.type.substr(0,4)=="text") {
+			reader.readAsText(file);
+			reader.onload = function(f){
+				dest.innerHTML = "<pre>"+this.result+"</pre>";
+				dest.style.background = "white";
+			}
+		}else {
+			dest.innerHTML = "暂不支持该类型文件预览";
+			dest.style.background = "white";
+		}
+	},false);
+</script>
+</html>
