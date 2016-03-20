@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>index</title>
+	<style type="text/css">
+		#map{
+			width: 500px;
+			height: 400px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+<div id="map"></div>
+<button id="watch">监控</button>
+<button id="clear">取消监控</button>
+</body>
+<script type="text/javascript">
+	var streetNumber,
+		street,
+		city,
+		province,
+		country,
+		watchId;
+	var mapshow = document.getElementById("map"),
+		watch = document.getElementById("watch"),
+		clear = document.getElementById("clear");
+	watch.onclick = function(){
+		watchId = navigator.geolocation.watchPosition(showMap);
+	}
+	clear.onclick = function(){
+		navigator.geolocation.clearWatch(watchId);
+	}
+	window.onload = function(){
+		if (navigator.geolocation == null) {
+			alert("您的浏览器不支持Geolocation API");
+			watch.disabled = "disabled";
+			clear.disabled = "disabled";
+		}else{
+			navigator.geolocation.getCurrentPosition(showMap,onError,{enableHighAccuracy:true,timeout:100000});
+		}
+	}
+	function showMap(position){
+		var coords = position.coords;
+		var latlng = new google.maps.LatLng(coords.latitude,coords.longitude);
+		var myOptions = {
+			zoom:18,
+			center:latlng,
+			mapTypeId:google.maps.MapTypeId.ROADMAP
+		};
+		var map1 = new google.maps.Map(mapshow,myOptions);
+		var marker = new google.maps.Marker({
+			position:latlng,
+			map:map1
+		});
+		var infowindow = new google.maps.InfoWindow({
+			content:"当前位置"
+		});
+		infowindow.open(map1,marker);
+	}
+	function onError(error){
+		var message = "";
+		switch(error.code){
+			case error.PERMISSION_DENIED:
+				message = "位置服务被拒绝";
+				break;
+			case error.POSITION_UNAVAILABLE:
+				message = "未能获取位置信息";
+				break;
+			case error.PERMISSION_DENIED_TIMEOUT:
+				message = "在规定的时间内未能获取位置信息";
+				break;
+		}
+		if (message == "") {
+			var strErrorCode = error.code.toString();
+			message = "由于不明原因，未能获取到位置信息（错误号："+strErrorCode+").";
+		}
+		alert(message);
+		watch.disabled = "disabled";
+		clear.disabled = "disabled";
+	}
+</script>
+</html>
