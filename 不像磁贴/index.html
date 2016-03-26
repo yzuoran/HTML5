@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>index</title>
+	<style type="text/css">
+	body{
+		margin: 0;
+	}
+	ul{
+		margin: 0 auto;
+		padding: 0;
+		list-style:none;
+		width: 500px;
+		height: 500px;
+		border: 1px solid #fff;
+		background-color: #000;
+	}
+	li{
+		width: 150px;
+		height: 150px;
+		background-color: rgba(0,120,215,0.9);
+		margin: 10px 0 0 10px;
+		float: left;
+	}
+	</style>
+</head>
+<body>
+<nav>
+	<ul id="nav">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</nav>
+</body>
+<script type="text/javascript">
+	var nav = document.getElementById("nav"),
+		block = nav.getElementsByTagName("li");
+	var EventUtil = {
+		addHandler:function(element,type,handler){
+			if (element.addEventListener) {
+				element.addEventListener(type,handler,false);
+			}else if (element.attachEvent) {
+				element.attachEvent('on'+type,handler);
+			}else{
+				element['on'+type] = handler;
+			}
+		},
+		getEvent:function(event){
+			return event || window.event;
+		},
+		getTarget:function(event){
+			return event.target || event.srcElement;
+		}
+	}
+	for (var i = 0; i < block.length; i++) {
+		block[i].style.transformOrigin = "50% 10%";
+		EventUtil.addHandler(block[i],"mousedown",function(event){
+			event = EventUtil.getEvent(event);
+			var target = EventUtil.getTarget(event),
+			    rotate = 0,
+			    opa = 0;
+			var timer = setInterval(function(){
+				++rotate;
+				if (rotate<20) {
+					target.style.webkitTransform = "rotateX("+rotate+"deg)";
+					opa = (opa<10)?(++opa):1;
+					console.log(opa);
+					target.style.boxShadow = "0px 4px 2px rgba(0,120,215,"+(opa/10)+")";
+				}else{
+					target.style.webkitTransform = "rotateX(20deg)";
+					target.style.boxShadow = "0px 4px 2px rgba(0,120,215,1)";
+					clearInterval(timer);
+				}
+			},10);
+		});
+		EventUtil.addHandler(block[i],"mouseup",function(event){
+			event = EventUtil.getEvent(event);
+			var target = EventUtil.getTarget(event),
+			    rotate = 20,
+				opa = 10;
+			var timer = setInterval(function(){
+				if (rotate>0) {
+					--rotate;
+					opa = (opa>0)?(--opa):1;
+					target.style.webkitTransform = "rotateX("+rotate+"deg)";
+					target.style.boxShadow = "0px 4px 2px rgba(0,120,215,"+(opa/10)+")";
+				}else{
+					target.style.webkitTransform = "rotateX(0deg)";
+					target.style.boxShadow = "0px 4px 2px rgba(0,120,215,0)";
+					clearInterval(timer);
+				}
+			},10);
+		});
+	}
+</script>
+</html>
