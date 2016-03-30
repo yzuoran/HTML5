@@ -1,14 +1,16 @@
 var canvas = document.getElementById('canvas'),
 	currName = document.getElementById('currName'),
 	context = canvas.getContext('2d'),
-	me = true,
-	chess = [];
+	me = true,//判断哪方
+	chess = [];//棋盘各点落子情况
+//初始化棋盘
 for (var i = 0; i < 20; i++) {
 	chess[i] = [];
 	for (var j = 0; j < 20; j++) {
 		chess[i][j] = 0;
 	}
 }
+//绘制棋盘
 var drawBg = function(){
 	for (var i = 0; i < 20; i++) {
 		context.strokeStyle = '#666';
@@ -20,6 +22,7 @@ var drawBg = function(){
 		context.stroke();
 	}
 }
+//点击落子
 canvas.onclick = function(event){
 	var currX = Math.floor(event.offsetX/25),
 		currY = Math.floor(event.offsetY/25);
@@ -37,6 +40,7 @@ canvas.onclick = function(event){
 	}
 	
 }
+//绘制棋子
 var drawChess = function(x,y,me){
 	context.beginPath();
 	var grad = context.createRadialGradient(x*25+13,y*25+13,8,x*25+13,y*25+13,2);
@@ -53,7 +57,8 @@ var drawChess = function(x,y,me){
 	context.fill();
 	context.closePath();
 }
-var dire = [];
+var dire = [];//获取各方向连续相同棋子数量（8个方向）
+//判断五子赢家
 var judge = function(currX,currY,me){
 	for (var i = 0; i < 8; i++) {
 		dire[i] = 0;
@@ -74,6 +79,7 @@ var judge = function(currX,currY,me){
 		}
 	}
 }
+//判断当前棋子是否构成五子
 var judgeOne = function(x,y,z){
 	var curr = chess[x][y],
 		work = false;
@@ -138,4 +144,5 @@ var judgeOne = function(x,y,z){
 		judgeOne(x,y,z);
 	}
 }
+//调用绘制棋盘函数
 drawBg();
