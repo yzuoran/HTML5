@@ -1,0 +1,44 @@
+canvas{
+	display: block;
+	margin: 10px auto;
+	cursor: pointer;
+}
+ul{
+	list-style: none;
+	margin: 0 auto;
+	padding: 0;
+}
+li{
+	width: 30px;
+	height: 30px;
+	float: left;
+	margin-right: 10px;
+	border: 2px solid #fff;
+}
+li:nth-child(1){
+	background-color: #000;
+}
+li:nth-child(2){
+	background-color: #f00;
+}
+li:nth-child(3){
+	background-color: #99cc33;
+}
+li:nth-child(4){
+	background-color: #ff0;
+}
+li:nth-child(5){
+	background-color: #0f0;
+}
+li:nth-child(6){
+	width: 60px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #ccc;
+	cursor: pointer;
+	float: right;
+	margin-right: 0;
+}
+li:nth-child(6):hover{
+	background-color: #0f0;
+}
